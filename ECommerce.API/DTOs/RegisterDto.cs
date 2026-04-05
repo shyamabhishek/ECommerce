@@ -1,8 +1,9 @@
 ﻿namespace ECommerce.API.DTOs
 {
-    public class LoginDto
+    public class RegisterDto
     {
         public required string Username { get; set; }
         public required string Password { get; set; }
+        public string Role { get; set; } = "Customer";
     }
 }

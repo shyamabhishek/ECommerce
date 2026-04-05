@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ECommerce.API.Services;
 using ECommerce.API.DTOs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ECommerce.API.Controllers
 {
@@ -24,6 +25,7 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")] // Only Admin can add products
         public async Task<IActionResult> Add(ProductDto productDto)
         {
             //throw new Exception("Test exception");

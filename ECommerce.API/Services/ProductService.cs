@@ -19,25 +19,26 @@ namespace ECommerce.API.Services
         public async Task<List<ProductDto>> GetAllAsync()
         {
             var products = await _repository.GetAllAsync();
-
-            return products.Select(p => new ProductDto
-            {
-                Name = p.Name,
-                Price = p.Price,
-                Quantity = p.Quantity,
-                Description = p.Description
-            }).ToList();
+            return _mapper.Map<List<ProductDto>>(products);
+            //return products.Select(p => new ProductDto
+            //{
+            //    Name = p.Name,
+            //    Price = p.Price,
+            //    Quantity = p.Quantity,
+            //    Description = p.Description
+            //}).ToList();
         }
 
         public async Task AddAsync(ProductDto productDto)
         {
-            var product = new Product
-            {
-                Name = productDto.Name,
-                Price = productDto.Price,
-                Quantity = productDto.Quantity,
-                Description = productDto.Description
-            };
+            var product = _mapper.Map<Product>(productDto);
+            //var product = new Product
+            //{
+            //    Name = productDto.Name,
+            //    Price = productDto.Price,
+            //    Quantity = productDto.Quantity,
+            //    Description = productDto.Description
+            //};
 
             await _repository.AddAsync(product);
         }
