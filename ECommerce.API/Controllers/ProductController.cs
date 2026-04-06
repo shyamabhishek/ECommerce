@@ -2,34 +2,52 @@
 using ECommerce.API.Services;
 using ECommerce.API.DTOs;
 using Microsoft.AspNetCore.Authorization;
+using ECommerce.API.Helpers;
+using ECommerce.API.Data;
+using ECommerce.API.Models; 
 
 namespace ECommerce.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ProductController : ControllerBase
+    
+    public class ProductController(AppDbContext context, IProductService productService) : ControllerBase
     {
-        private readonly IProductService _service;
-
-        public ProductController(IProductService service)
-        {
-            _service = service;
-        }
-
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetProducts([FromQuery] ProductParams productParams)
         {
-            //throw new Exception("Test exception");
-            var products = await _service.GetAllAsync();
-            return Ok(products);
+            
+            var query = context.Products
+                .OrderBy(p => p.Id)
+                .Select(p => new ProductDto
+                {
+                    Name = p.Name,
+                    Price = p.Price,
+                    Quantity = p.Quantity,
+                    Description = p.Description 
+                })
+                .AsQueryable();
+
+            // the query holds ProductDtos, so this line will work perfectly
+            var pagedProducts = await PagedList<ProductDto>.CreateAsync(query, productParams.PageNumber, productParams.PageSize);
+
+            Response.Headers.Append("X-Pagination", System.Text.Json.JsonSerializer.Serialize(new
+            {
+                pagedProducts.CurrentPage,
+                pagedProducts.TotalPages,
+                pagedProducts.PageSize,
+                pagedProducts.TotalCount
+            }));
+
+            return Ok(pagedProducts);
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")] // Only Admin can add products
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Add(ProductDto productDto)
         {
-            //throw new Exception("Test exception");
-            await _service.AddAsync(productDto); // ✅ FIXED (async)
+            
+            await productService.AddAsync(productDto);
             return Ok("Product Added Successfully");
         }
     }

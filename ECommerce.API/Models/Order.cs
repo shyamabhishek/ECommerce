@@ -8,7 +8,7 @@
         public DateTime OrderDate { get; set; } = DateTime.UtcNow;
         public decimal TotalAmount { get; set; }
         public required string OrderStatus { get; set; } = "Pending";
-        public List<OrderItem> Items { get; set; } = new();
+        public List<OrderItem> OrderItems { get; set; } = new();
 
     }
 }
