@@ -10,5 +10,14 @@
             get => _pageSize;
             set => _pageSize = (value > MaxPageSize) ? MaxPageSize : value;
         }
+        public string? OrderBy { get; set; } // e.g., "priceDesc", "name"
+
+        private string? _searchTerm;
+        public string? SearchTerm
+        {
+            get => _searchTerm;
+            // Force the search word to lowercase so "Shirt" and "shirt" match identically
+            set => _searchTerm = value?.ToLower();
+        }
     }
 }

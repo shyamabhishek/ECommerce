@@ -10,11 +10,13 @@ using ECommerce.API.Models;
 
 namespace ECommerce.API.Controllers
 {
+
     [ApiController]
     [Route("api/[controller]")]
     // Using C# 12 Primary Constructor syntax here:
     public class AuthController(IConfiguration config, AppDbContext context) : ControllerBase
     {
+
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterDto dto)
         {
@@ -38,7 +40,15 @@ namespace ECommerce.API.Controllers
 
             return Ok("User registered successfully");
         }
-
+        /// <summary>
+        /// Authenticates a user and issues a secure JWT token.
+        /// </summary>
+        /// <remarks>
+        /// Provide valid credentials to receive a Bearer token. You must click the "Authorize" padlock icon at the top of the Swagger page and paste this token (prefixed with "Bearer ") to access the secured Cart and Order endpoints.
+        /// </remarks>
+        /// <param name="login">The user's login credentials (username/password).</param>
+        /// <returns>A secure JWT Bearer token.</returns>
+       
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto login)
         {

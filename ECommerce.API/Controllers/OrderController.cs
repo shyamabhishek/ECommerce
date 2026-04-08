@@ -10,6 +10,17 @@ namespace ECommerce.API.Controllers
     [Route("api/[controller]")]
     public class OrderController(IOrderService orderService) : ControllerBase
     {
+        /// <summary>
+        /// Processes a checkout and converts the user's cart into a finalized order.
+        /// </summary>
+        /// <remarks>
+        /// **Transactional Process:**
+        /// 1. Verifies final inventory levels one last time to prevent over-selling.
+        /// 2. Deducts the purchased quantities from the master product catalog.
+        /// 3. Generates a final order receipt locking in the purchase prices.
+        /// 4. Completely empties the user's active cart.
+        /// </remarks>
+        /// <returns>The finalized Order receipt showing the total amount and order status.</returns>
         [HttpPost("checkout")]
         public async Task<IActionResult> Checkout()
         {
@@ -27,8 +38,14 @@ namespace ECommerce.API.Controllers
             }
         }
 
-
-        [HttpGet]
+        /// <summary>
+        /// Retrieves the complete order history for the currently logged-in user.
+        /// </summary>
+        /// <remarks>
+        /// Returns all past purchases made by this user, automatically sorted by date (newest first).
+        /// </remarks>
+        /// <returns>A list of past Order DTOs.</returns>
+        [HttpGet("history")]
         public async Task<IActionResult> GetOrderHistory()
         {
             var userId = GetUserIdFromToken();
